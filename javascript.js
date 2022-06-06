@@ -1,14 +1,13 @@
 /* ==========
-  Event Page Banner Styles v 1.0.04
+  Event Page Banner Styles v 1.1
   Event Page Banner Images for Squarespace 7.1 & 7.0
   Copyright Will-Myers 
-  Fixing Error with Header Element
 ========== */
 (function(){
   let $configEl = $('[data-wm-plugin="event-post"]');
 
   function initEventBanner() {
-    let cssFile = 'https://assets.codepen.io/3198845/WMEventPageBannerTESTING.css';
+    let cssFile = 'https://cdn.jsdelivr.net/gh/willmyethewebsiteguy/EventPostBanner@1.1.001/styles.min.css';
     addCSSFileToHeader(cssFile);
     function addCSSFileToHeader(url){
       let head = document.getElementsByTagName('head')[0],
