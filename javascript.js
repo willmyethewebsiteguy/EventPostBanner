@@ -1,13 +1,14 @@
 /* ==========
-  Event Page Banner Styles v 1.1
+  Event Page Banner Styles v 1.0.04
   Event Page Banner Images for Squarespace 7.1 & 7.0
   Copyright Will-Myers 
+  Fixing Error with Header Element
 ========== */
 (function(){
   let $configEl = $('[data-wm-plugin="event-post"]');
 
   function initEventBanner() {
-    let cssFile = 'https://cdn.jsdelivr.net/gh/willmyethewebsiteguy/EventPostBanner@1.1.001/styles.min.css';
+    let cssFile = 'https://cdn.jsdelivr.net/gh/willmyethewebsiteguy/EventPostBanner@1.1.002/styles.min.css';
     addCSSFileToHeader(cssFile);
     function addCSSFileToHeader(url){
       let head = document.getElementsByTagName('head')[0],
@@ -17,7 +18,6 @@
       link.href = url;
       head.appendChild(link);
       link.onload = function(){
-        
       };
     }
     //Config Styles
@@ -166,7 +166,7 @@
     function ifInEditMode(mutationList, observer) {
       // Use traditional 'for loops' for IE 11
       if (targetNode.classList.contains("sqs-layout-editing")) {
-        $('link[href*="WMEventPageBanner"]').attr("disabled", "disabled");
+        $('link[href*="WMEventPageBanner"], head link[href*="/EventPostBanner@"]').attr("disabled", "disabled");
         $(".wm-event-banner .section-background-content").hide();
         $(".wm-event-banner .section-background-image").hide();
       } else {
