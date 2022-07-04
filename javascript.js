@@ -8,11 +8,13 @@
   let $configEl = $('[data-wm-plugin="event-post"]');
 
   function initEventBanner() {
-    let cssFile = 'https://cdn.jsdelivr.net/gh/willmyethewebsiteguy/EventPostBanner@1.1.002/styles.min.css';
+    let cssFile = 'https://cdn.jsdelivr.net/gh/willmyethewebsiteguy/EventPostBanner@1.1.003/styles.min.css';
     addCSSFileToHeader(cssFile);
     function addCSSFileToHeader(url){
+      if ($('#wm-event-banner-css').length) return;
       let head = document.getElementsByTagName('head')[0],
           link = document.createElement('link');
+      link.id = 'wm-event-banner-css'
       link.rel = 'stylesheet';
       link.type = 'text/css';
       link.href = url;
@@ -166,7 +168,7 @@
     function ifInEditMode(mutationList, observer) {
       // Use traditional 'for loops' for IE 11
       if (targetNode.classList.contains("sqs-layout-editing")) {
-        $('link[href*="WMEventPageBanner"], head link[href*="/EventPostBanner@"]').attr("disabled", "disabled");
+        $('link#wm-event-banner-css').attr("disabled", "disabled");
         $(".wm-event-banner .section-background-content").hide();
         $(".wm-event-banner .section-background-image").hide();
       } else {
