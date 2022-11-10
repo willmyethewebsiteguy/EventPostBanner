@@ -354,3 +354,33 @@ main.container{
     width:unset !important;
   }
 }
+
+/* Updates for new SS Border Changes */
+.wm-banner-style-1:not(.sqs-edit-mode-active) .page-section.has-banner .section-border,
+.wm-banner-style-2:not(.sqs-edit-mode-active) .page-section.has-banner .section-border{
+  position: relative;
+  top: 0;
+  width: 100%;
+  display: flex;
+}
+.wm-banner-style-3:not(.sqs-edit-mode-active) .page-section.has-banner .section-border,
+.wm-banner-style-4:not(.sqs-edit-mode-active) .page-section.has-banner .section-border {
+  width: 50%;
+  min-height: 100vh;
+  position: sticky;
+}
+
+.wm-banner-style-3:not(.sqs-edit-mode-active) .has-banner .wm-event-banner, 
+.wm-banner-style-4:not(.sqs-edit-mode-active) .has-banner .wm-event-banner{
+  width:100%;
+} 
+@media(max-width:768px) {
+  .wm-banner-style-3:not(.sqs-edit-mode-active) .page-section.has-banner .section-border,
+  .wm-banner-style-4:not(.sqs-edit-mode-active) .page-section.has-banner .section-border{
+    top: 0;
+    position: relative;
+    width: 100%;
+    display: flex;
+    min-height: 60vh;
+  }
+}
