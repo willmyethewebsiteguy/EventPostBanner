@@ -8,7 +8,7 @@
   let $configEl = $('[data-wm-plugin="event-post"]');
 
   function initEventBanner() {
-    let cssFile = 'https://cdn.jsdelivr.net/gh/willmyethewebsiteguy/EventPostBanner@1.1.003/styles.min.css';
+    let cssFile = 'https://cdn.jsdelivr.net/gh/willmyethewebsiteguy/EventPostBanner@1.1/styles.min.css';
     addCSSFileToHeader(cssFile);
     function addCSSFileToHeader(url){
       if ($('#wm-event-banner-css').length) return;
