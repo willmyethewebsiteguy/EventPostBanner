@@ -8,7 +8,7 @@
   let $configEl = $('[data-wm-plugin="event-post"]');
 
   function initEventBanner() {
-    let cssFile = 'https://cdn.jsdelivr.net/gh/willmyethewebsiteguy/EventPostBanner@1.1/styles.min.css';
+    let cssFile = 'https://cdn.jsdelivr.net/gh/willmyethewebsiteguy/EventPostBanner@1/styles.min.css';
     addCSSFileToHeader(cssFile);
     function addCSSFileToHeader(url){
       if ($('#wm-event-banner-css').length) return;
@@ -249,4 +249,35 @@
       }
     });
   }
+
+  function initHeaderLogic(){
+    let headerObj = {};
+    let root = document.querySelector('#sections');
+    headerObj.headerElem = document.querySelector('#header');
+    if (!headerObj.headerElem || !root) return;
+
+    headerObj.setHeaderCSS = function setHeight(){
+      headerObj.headerBottom = headerObj.headerElem.getBoundingClientRect().bottom;
+      headerObj.headerBottom =  headerObj.headerBottom < 0 ? 0 : headerObj.headerBottom;
+      headerObj.headerHeight = headerObj.headerElem.getBoundingClientRect().height;
+      root.style.setProperty('--wM-headerBottom', headerObj.headerBottom + 'px');
+      root.style.setProperty('--wM-headerHeight', headerObj.headerHeight + 'px');
+    }
+    headerObj.setHeaderCSS();
+
+    headerObj.headerElem.addEventListener('transitionend', () => {
+      headerObj.setHeaderCSS();
+    });
+    window.addEventListener('scroll', () => {
+      setTimeout(function(){
+        headerObj.setHeaderCSS();
+      }, 150);
+    });
+    window.addEventListener('resize', () => {
+      setTimeout(function(){
+        headerObj.setHeaderCSS();
+      }, 150);
+    });
+  }
+  initHeaderLogic();
 }());
