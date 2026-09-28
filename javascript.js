@@ -5,9 +5,19 @@
   Fixing Error with Header Element
 ========== */
 (function(){
+  const context = (window.Static && window.Static.SQUARESPACE_CONTEXT) || {};
   let $configEl = $('[data-wm-plugin="event-post"]');
 
   function initEventBanner() {
+    // The new collection architecture uses a stable section attribute.
+    // Keep the legacy selectors for existing 7.1 and 7.0 installations.
+    const $section = document.querySelector('[data-sqsp-section="events-item"]') ||
+      document.querySelector('#sections > .page-section.content-collection') ||
+      document.querySelector('main.Main--events-item');
+    if (!$section || $section.querySelector('.wm-event-banner')) return;
+    const $sectionContent = $section.querySelector('.content-wrapper, section.Main-content');
+    if (!$sectionContent) return;
+
     let cssFile = 'https://cdn.jsdelivr.net/gh/willmyethewebsiteguy/EventPostBanner@1/styles.min.css';
     addCSSFileToHeader(cssFile);
     function addCSSFileToHeader(url){
@@ -32,12 +42,9 @@
         imgSrc =  $configEl.attr("data-img-src") == undefined
     ? "thumbnail" : $configEl.attr("data-img-src"),
         baseUrl = location.protocol + "//" + location.host + location.pathname,
-        $section = document.querySelector(
-          "#sections > .page-section.content-collection"
-        ) || document.querySelector("main.Main--events-item"),
-        $sectionBackground = $section.querySelector(".section-background") ||
+        $sectionBackground =
+        $section.querySelector(".sqs-section-background, .section-background") ||
         document.createElement("section"),
-        $sectionContent = $section.querySelector(".content-wrapper") || $section.querySelector("section.Main-content"),
         $title = $sectionContent.querySelector(".eventitem-column-meta") ||
         document.createElement("div"),
         $titleClone = $title.cloneNode(true),
@@ -46,9 +53,11 @@
     //Get JSON Post Data
     let postData;
     $.getJSON(baseUrl + "/?format=json-pretty", {_: new Date().getTime()}, function (data) {
+      if (!data || !data.item) return;
       postData = data;
-      let posX = data.item.mediaFocalPoint.x * 100 + "%",
-          posY = data.item.mediaFocalPoint.y * 100 + "%",
+      const focal = data.item.mediaFocalPoint || { x: 0.5, y: 0.5 };
+      let posX = focal.x * 100 + "%",
+          posY = focal.y * 100 + "%",
           focalPoint = posX + " " + posY;
       body.style.setProperty("--image-focal-point", focalPoint);
       if (imgSrc == "thumbnail") {
@@ -59,7 +68,7 @@
 
 
     //If 7.0 Website
-    if (window.Static.SQUARESPACE_CONTEXT.templateVersion == "7") {
+    if (context.templateVersion == "7") {
       document.querySelector("body").classList.add("sqs-seven");
       $sectionBackground.classList.add("Index-page--has-image");
       //let main = document.querySelector("main.Main--blog-item");
@@ -76,6 +85,7 @@
       }
     }
 
+    if (!$sectionBackground.parentNode) $section.prepend($sectionBackground);
     body.classList.add("wm-banner-style-" + style);
     $section.classList.add("has-banner");
     $sectionBackground.classList.add("wm-event-banner");
@@ -110,25 +120,29 @@
     sectionBackgroundContent.append($titleClone);
 
     //Make Content Background Same Color on 7.1
+    const colorSource = $sectionBackground.classList.contains('sqs-section-background')
+      ? ($sectionBackground.closest('.section-border') || $sectionBackground)
+      : $sectionBackground;
     let backgroundColor = window
-    .getComputedStyle($sectionBackground)
+    .getComputedStyle(colorSource)
     .getPropertyValue("background-color");
-    if (window.Static.SQUARESPACE_CONTEXT.templateVersion !== "7") {
+    if (context.templateVersion !== "7") {
       body.style.setProperty("--section-background-color", backgroundColor);
     }
 
     function buildImage() {
+      if (!imgSrc) return;
       let img = document.createElement("img") ;
+      img.alt = "";
       img.setAttribute("data-src", imgSrc);
       img.src = imgSrc;
-      console.log(sectionBackgroundImg);
       if (sectionBackgroundImg) {
         sectionBackgroundImg.append(img);
       }
     }
 
     //Set Content Width Variable
-    if (window.Static.SQUARESPACE_CONTEXT.templateVersion !== "7") {
+    if (context.templateVersion !== "7") {
       try {
         let sectionWidth = findSectionWidth(),
             pageWidth = findMaxPageWidth();
@@ -139,7 +153,7 @@
       }
     }
 
-    if (window.Static.SQUARESPACE_CONTEXT.templateVersion == "7") {
+    if (context.templateVersion == "7") {
       document.addEventListener('DOMContentLoaded', function() {
         loadAllImages();
       })
@@ -167,12 +181,12 @@
     // Callback function to execute when mutations are observed
     function ifInEditMode(mutationList, observer) {
       // Use traditional 'for loops' for IE 11
-      if (targetNode.classList.contains("sqs-layout-editing")) {
+      if (targetNode.classList.contains("sqs-layout-editing") || targetNode.classList.contains("sqs-edit-mode-active")) {
         $('link#wm-event-banner-css').attr("disabled", "disabled");
         $(".wm-event-banner .section-background-content").hide();
         $(".wm-event-banner .section-background-image").hide();
       } else {
-        $('link[href*="WMEventPageBanner"]').removeAttr("disabled");
+        $('link#wm-event-banner-css').removeAttr("disabled");
         $(".wm-event-banner .section-background-image").show();
         $(".wm-event-banner .section-background-content").show();
       }
@@ -183,7 +197,7 @@
   let findSectionWidth = () => {
     let width,
         tweakJSONWidth =
-        window.Static.SQUARESPACE_CONTEXT.tweakJSON["tweak-blog-item-width"];
+        (context.tweakJSON || {})["tweak-blog-item-width"];
     if (tweakJSONWidth == "Narrow") {
       width = "50%";
     } else if (tweakJSONWidth == "Medium") {
@@ -192,14 +206,14 @@
       width = "100%";
     } else if (tweakJSONWidth == "Custom") {
       width =
-        window.Static.SQUARESPACE_CONTEXT.tweakJSON[
+        (context.tweakJSON || {})[
         "tweak-blog-item-custom-width"
       ] + "%";
     }
     return width;
   };
   let findMaxPageWidth = () => {
-    let width = window.Static.SQUARESPACE_CONTEXT.tweakJSON["maxPageWidth"];
+    let width = (context.tweakJSON || {})["maxPageWidth"];
     return width;
   };
 
@@ -228,7 +242,7 @@
 
   /* init 7.1 */
   let isItem = document.querySelector('body').id.includes('item');
-  if (window.Static.SQUARESPACE_CONTEXT.templateVersion !== "7") {
+  if (context.templateVersion !== "7") {
       if($configEl.length && isItem){
         initEventBanner();
         if (window.self !== window.top){

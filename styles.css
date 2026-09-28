@@ -6,7 +6,8 @@ body {
   --blog-glass-background:hsla(0,0%,0%,.27);
   --max-page-width:1100px;
 }
-.tweak-wm-banner .content-collection.has-banner {
+.tweak-wm-banner .content-collection.has-banner,
+.tweak-wm-banner [data-sqsp-section="events-item"].cdk-section.has-banner {
   flex-direction:column;
   padding-top:0px !important; 
 }
@@ -395,5 +396,32 @@ main.container{
     width: 100%;
     display: flex;
     min-height: 60vh;
+  }
+}
+
+/* New Squarespace collection backgrounds have inline positioning.
+   Override it only while this plugin is active. Legacy markup is unchanged. */
+[data-sqsp-section="events-item"].cdk-section.has-banner .sqs-section-background.wm-event-banner {
+  position: relative !important;
+  inset: 0 !important;
+  pointer-events: auto !important;
+}
+[data-sqsp-section="events-item"].cdk-section.has-banner .wm-event-banner .section-background-content {
+  position: relative;
+}
+/* Item navigation now lives inside the content column. Keep it in that column. */
+@media (min-width: 768px) {
+  .wm-banner-style-3 [data-sqsp-section="events-item"].cdk-section.has-banner .item-pagination,
+  .wm-banner-style-4 [data-sqsp-section="events-item"].cdk-section.has-banner .item-pagination {
+    position: relative;
+    left: auto;
+    right: auto;
+    width: 100%;
+    box-sizing: border-box;
+  }
+  .wm-banner-style-3 [data-sqsp-section="events-item"].cdk-section.has-banner .events-item-wrapper,
+  .wm-banner-style-4 [data-sqsp-section="events-item"].cdk-section.has-banner .events-item-wrapper {
+    padding-top: 0;
+    padding-bottom: 0;
   }
 }
