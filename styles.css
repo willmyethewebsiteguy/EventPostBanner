@@ -7,7 +7,7 @@ body {
   --max-page-width:1100px;
 }
 .tweak-wm-banner .content-collection.has-banner,
-.tweak-wm-banner [data-sqsp-section="events-item"].cdk-section.has-banner {
+.tweak-wm-banner [data-sqsp-section="events-item"].has-banner {
   flex-direction:column;
   padding-top:0px !important; 
 }
